@@ -231,7 +231,7 @@ Image<T>  Image<T>::operator*(const Image<T>& img) {
     }
 
     return result;*/
-    return this->And(src);
+    return this->And(img);
 }
 
 template<>
