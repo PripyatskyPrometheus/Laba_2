@@ -260,19 +260,19 @@ Image<T>  Image<T>::operator+(T value) {
     return result;
 }
 
-template<>
-Image<char> Image<char>::operator+(char value) {
-    Image<char> result(_maxX, _maxY);
-
-    for (int i = 0; i < _maxX; i++)
-        for (int j = 0; j < _maxY; j++)
-            if (matrix[i][j] == '0' && value == '0')
-                result(i, j) = '0';
-            else
-                result(i, j) = '1';
-
-    return result;
-}
+//template<>
+//Image<char> Image<char>::operator+(char value) {
+//    Image<char> result(_maxX, _maxY);
+//
+//    for (int i = 0; i < _maxX; i++)
+//        for (int j = 0; j < _maxY; j++)
+//            if (matrix[i][j] == '0' && value == '0')
+//                result(i, j) = '0';
+//            else
+//                result(i, j) = '1';
+//
+//    return result;
+//}
 
 template<class T>
 Image<T> Image<T>::operator*(T value) {
@@ -286,19 +286,19 @@ Image<T> Image<T>::operator*(T value) {
     return result;
 }
 
-template<>
-Image<char> Image<char>::operator*(char value) {
-    Image<char> result(_maxX, _maxY);
-
-    for (int i = 0; i < _maxX; i++)
-        for (int j = 0; j < _maxY; j++)
-            if (matrix[i][j] == '1' && value == '1')
-                result(i, j) = '1';
-            else
-                result(i, j) = '0';
-
-    return result;
-}
+//template<>
+//Image<char> Image<char>::operator*(char value) {
+//    Image<char> result(_maxX, _maxY);
+//
+//    for (int i = 0; i < _maxX; i++)
+//        for (int j = 0; j < _maxY; j++)
+//            if (matrix[i][j] == '1' && value == '1')
+//                result(i, j) = '1';
+//            else
+//                result(i, j) = '0';
+//
+//    return result;
+//}
 
 template<class T>
 Image<T>  Image<T>::operator!() {
@@ -336,7 +336,6 @@ Image<T> Image<T>::And(T value) const {
         for (int j = 0; j < col; j++) {
             if ((double)matrix[i][j] * value > numeric_limits<T>::max() || (double)matrix[i][j] * value < numeric_limits<T>::min())           
                 result(i, j) = 0;
-            
             else            
                 result(i, j) = matrix[i][j] * value;           
         }
@@ -423,8 +422,11 @@ double Image<char>::fill_ratio() {
 
 template<class T>
 T  Image<T>::operator()(int x, int y) const {
-    if (x < 0 || x >= _maxX || y < 0 || y >= _maxY)
-        throw out_of_range("Out of range");
+    return matrix[x][y];
+}
+
+template<class T>
+T& Image<T>::operator()(int x, int y) {
     return matrix[x][y];
 }
 
@@ -438,11 +440,6 @@ void Image<T>::change() {
         }
         cout << endl;
     }
-}
-
-template<class T>
-T& Image<T>::operator()(int x, int y) {
-    return matrix[x][y];
 }
 
 template<class T>
