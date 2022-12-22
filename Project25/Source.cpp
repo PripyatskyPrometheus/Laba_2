@@ -2,7 +2,9 @@
 #include<iostream>
 #include<locale.h>
 #include<stdlib.h>
+#include <math.h>
 #include<stdbool.h>
+#include <string>
 #include <typeinfo>
 #include <limits>
 
@@ -31,38 +33,37 @@ public:
     
     friend Image operator*(T value, /*const*/ Image<T>& img)
     {
-       /* Image<T> result(_maxX, _maxY);
+        Image<T> result(_maxX, _maxY);
 
         for (int i = 0; i < _maxX; i++) {
             for (int j = 0; j < _maxY; j++) {
-                result(i, j) = matrix[i][j] * img(i, j);
+                if ((double)matrix[i][j] * img(i, j) > numeric_limits<T>::max() || (double)matrix[i][j] * img(i, j) < numeric_limits<T>::min())
+                    result(i, j) = 0;
+                else
+                    result(i, j) = matrix[i][j] * img(i, j);
             }
-        }*/
+        }
 
-        return img.And(value);
+        return result;
 
     }
 
-    friend Image operator+(T value, /*const*/ Image<T>& img)
+    friend Image operator+(T value, Image<T>& img)
     {
-        /*Image<T> result(_maxX, _maxY);
+        Image<T> result(_maxX, _maxY);
 
         for (int i = 0; i < _maxX; i++) {
             for (int j = 0; j < _maxY; j++) {
-                result(i, j) = matrix[i][j] + img(i, j);
+                if ((double)matrix[i][j] + img(i, j) > numeric_limits<T>::max() || (double)matrix[i][j] + img(i, j) < numeric_limits<T>::min())
+                    result(i, j) = 0;
+                else
+                    result(i, j) = matrix[i][j] + img(i, j);
             }
-        }*/
+        }
 
-        return img.Or(value);
+
+        return result;
     }
-
-   Image<T> And(T rhs) const;
-
-   Image<T> Or(T rhs) const;
-
-   Image<T> And(const Image<T>& img) const;
-
-   Image<T> Or(const Image<T>& img) const;
 
    Image<T> operator!();
 
@@ -191,61 +192,39 @@ T Image<T>::get(int x, int y) {
 }
 
 template<class T>
-Image<T> Image<T>::operator+(const  Image<T>& img) {
-    /*Image<T> result(_maxX, _maxY);
+Image<T> Image<T>::operator+(const Image<T>& img) {
+    Image<T> result(_maxX, _maxY);
 
     for (int i = 0; i < _maxX; i++) {
         for (int j = 0; j < _maxY; j++) {
-            result(i, j) = matrix[i][j] + img(i, j);
+            /*double test1 = this->matrix[i][j];
+            double test2 = img(i, j);*/
+
+            if ((double)matrix[i][j] + img(i, j) > numeric_limits<T>::max() || (double)matrix[i][j] + img(i, j) < numeric_limits<T>::min())
+                result(i, j) = 0;
+
+            else
+                result(i, j) = matrix[i][j] + img(i, j);
         }
     }
-    return result;*/
-    return this->Or(img);
-}
-
-template<>
-Image<char> Image<char>::operator+(const Image<char>& img) {
-    /*Image<char> result(_maxX, _maxY);*/
-
-    /*for (int i = 0; i < _maxX; ++i) {
-        for (int j = 0; j < _maxY; j++) {
-            if (matrix[i][j] == '0' && img(i, j) == '0')
-                result(i, j) = '0';
-            else
-                result(i, j) = '1';
-        }
-    }*/
-    /*return result;*/
-    return this->Or(img);
+    return result;
 }
 
 template<class T>
 Image<T>  Image<T>::operator*(const Image<T>& img) {
-   /* Image<T> result(_maxX, _maxY);
+    Image<T> result(_maxX, _maxY);
 
     for (int i = 0; i < _maxX; i++) {
         for (int j = 0; j < _maxY; j++) {
-            result(i, j) = matrix[i][j] *img(i, j);
+            if ((double)matrix[i][j] * img(i, j) > numeric_limits<T>::max() || (double)matrix[i][j] * img(i, j) < numeric_limits<T>::min())
+                result(i, j) = 0;
+            else
+                result(i, j) = matrix[i][j] * img(i, j);
         }
     }
 
-    return result;*/
-    return this->And(img);
+    return result;
 }
-
-//template<>
-//Image<char> Image<char>::operator*(const Image<char>& img) {   
-//   /* Image<char> result(_maxX, _maxY);
-//
-//    for (int i = 0; i < _maxX; i++)
-//        for (int j = 0; j < _maxY; j++)
-//            if (matrix[i][j] == '1' && img(i, j) == '1')
-//                result(i, j) = '1';
-//            else
-//                result(i, j) = '0';
-//
-//    return result;*/
-//}
 
 template<class T>
 Image<T>  Image<T>::operator+(T value) {
@@ -253,25 +232,14 @@ Image<T>  Image<T>::operator+(T value) {
 
     for (int i = 0; i < _maxX; i++) {
         for (int j = 0; j < _maxY; j++) {
-            result(i, j) = matrix[i][j] + value;
+            if ((double)matrix[i][j] + value > numeric_limits<T>::max() || (double)matrix[i][j] + value < numeric_limits<T>::min())
+                result(i, j) = 0;
+            else
+                result(i, j) = matrix[i][j] + value;
         }
     }
     return result;
 }
-
-//template<>
-//Image<char> Image<char>::operator+(char value) {
-//    Image<char> result(_maxX, _maxY);
-//
-//    for (int i = 0; i < _maxX; i++)
-//        for (int j = 0; j < _maxY; j++)
-//            if (matrix[i][j] == '0' && value == '0')
-//                result(i, j) = '0';
-//            else
-//                result(i, j) = '1';
-//
-//    return result;
-//}
 
 template<class T>
 Image<T> Image<T>::operator*(T value) {
@@ -279,36 +247,26 @@ Image<T> Image<T>::operator*(T value) {
 
    for (int i = 0; i < _maxX; i++) {
        for (int j = 0; j < _maxY; j++) {
-           result.matrix[i][j] = matrix[i][j] * value;
+           if ((double)matrix[i][j] * value > numeric_limits<T>::max() || (double)matrix[i][j] * value < numeric_limits<T>::min())
+               result(i, j) = 0;
+           else
+               result(i, j) = matrix[i][j] * value;
        }
    }
     return result;
 }
 
-//template<>
-//Image<char> Image<char>::operator*(char value) {
-//    Image<char> result(_maxX, _maxY);
-//
-//    for (int i = 0; i < _maxX; i++)
-//        for (int j = 0; j < _maxY; j++)
-//            if (matrix[i][j] == '1' && value == '1')
-//                result(i, j) = '1';
-//            else
-//                result(i, j) = '0';
-//
-//    return result;
-//}
-
 template<class T>
-Image<T>  Image<T>::operator!() {
+Image<T> Image<T>::operator!() {
     Image<T> result(_maxX, _maxY);
     for (int i = 0; i < _maxX; i++) {
         for (int j = 0; j < _maxY; j++) { 
-            if (matrix[i][j] == 0)
+            if (matrix[i][j] == 0) {
                 matrix[i][j] = numeric_limits<T>::max();
-            else               
+            }
+            else {
                 matrix[i][j] = 0;
-                
+            }
         }
     }
     return result;
@@ -323,74 +281,6 @@ Image<char> Image<char>::operator!() {
                 matrix[i][j] = numeric_limits<char>::max(); 
             else
                 matrix[i][j] = '0';
-        }
-    }
-    return result;
-}
-
-template <class T>
-Image<T> Image<T>::And(T value) const {
-    Image<T> result(_maxX, _maxY);
-    for (int i = 0; i < _maxX; i++){
-        for (int j = 0; j < _maxY; j++) {
-            if ((double)matrix[i][j] * value > numeric_limits<T>::max() || (double)matrix[i][j] * value < numeric_limits<T>::min())           
-                result(i, j) = 0;
-            else            
-                result(i, j) = matrix[i][j] * value;           
-        }
-    }
-    return result;
-}
-
-template <class T>
-Image<T> Image<T>::Or(T value) const {
-    Image<T> result(_maxX, _maxY);
-
-    for (int i = 0; i < _maxX; i++) {
-        for (int j = 0; j < _maxY; j++) {
-            if ((double)matrix[i][j] + value > numeric_limits<T>::max() || (double)matrix[i][j] + value < numeric_limits<T>::min())            
-                result(i, j) = 0;
-            
-            else
-                result(i, j) = matrix[i][j] + value;            
-        }
-    }
-    return result;
-}
-
-template <class T>
-Image<T> Image<T>::And(const Image<T>& img) const{
-    Image<T> result(_maxX, _maxY);
-
-    for (int i = 0; i < _maxX; i++) {
-        for (int j = 0; j < _maxY; j++) {
-
-            if ((double)matrix[i][j] * img(i, j) > numeric_limits<T>::max() || (double)matrix[i][j] * img(i, j) < numeric_limits<T>::min())
-                result(i, j) = 0;
-            
-            else          
-                result(i, j) = matrix[i][j] * img(i, j);
-        }
-    }
-    return result;
-}
-
-template <class T>
-Image<T> Image<T>::Or(const Image<T>& img) const {
-    Image<T> result(_maxX, _maxY);
-
-    for (int i = 0; i < _maxX; i++) {
-        for (int j = 0; j < _maxY; j++) {
-
-            double test1 = this->matrix[i][j];
-            double test2 = img(i, j);
-
-            if ((double)matrix[i][j] +img(i, j) > numeric_limits<T>::max() || (double)matrix[i][j] + img(i, j) < numeric_limits<T>::min())
-                            result(i, j) = 0;
-            
-            else
-                result(i, j) = matrix[i][j] + img(i, j);
-            
         }
     }
     return result;
@@ -479,7 +369,7 @@ void menu(Image<T>& img1, Image<T>& img2, int X, int Y) {
             break;
         }
         case 3: {
-           img1 = !img1;
+           !img1;
             break;
         }
         case 4: {
@@ -487,20 +377,17 @@ void menu(Image<T>& img1, Image<T>& img2, int X, int Y) {
             break;
         }
         case 5: {
-
             T value;
             cout << "Enter a value" << endl;
             cin >> value;
            img1 = img1 + value;
             break;
         }
-        case 6: {
-           
+        case 6: {         
             img1 = img1 * img2;
             break;
         }
         case 7: {
-            
             T value;
             cout << "Enter a value" << endl;
             cin >> value;
