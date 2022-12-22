@@ -199,8 +199,6 @@ Image<T> Image<T>::operator+(const Image<T>& img) {
 
     for (int i = 0; i < _maxX; i++) {
         for (int j = 0; j < _maxY; j++) {
-            /*double test1 = this->matrix[i][j];
-            double test2 = img(i, j);*/
 
             if ((double)matrix[i][j] + img(i, j) > numeric_limits<T>::max() || (double)matrix[i][j] + img(i, j) < numeric_limits<T>::min())
                 result(i, j) = 0;
