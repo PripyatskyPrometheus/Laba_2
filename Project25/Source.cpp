@@ -129,9 +129,11 @@ Image<char>::Image(int x, int y) {
     for (int i = 0; i < _maxX; i++)
         matrix[i] = new char[_maxY];
 
-    for (int i = 0; i < _maxX; i++)
-        for (int j = 0; j < _maxY; j++)
+    for (int i = 0; i < _maxX; i++) {
+        for (int j = 0; j < _maxY; j++) {
             matrix[i][j] = '0';
+        }
+    }
 }
 
 template<class T>
