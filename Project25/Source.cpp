@@ -31,16 +31,16 @@ public:
 
     Image<T> operator*(T value);
     
-    friend Image operator*(T value, /*const*/ Image<T>& img)
+    friend Image operator*(T value, Image<T>& img)
     {
         Image<T> result(_maxX, _maxY);
 
         for (int i = 0; i < _maxX; i++) {
             for (int j = 0; j < _maxY; j++) {
-                if ((double)matrix[i][j] * img(i, j) > numeric_limits<T>::max() || (double)matrix[i][j] * img(i, j) < numeric_limits<T>::min())
+                if ((double)img(i, j) * value > numeric_limits<T>::max() || (double)img(i, j) * value < numeric_limits<T>::min())
                     result(i, j) = 0;
                 else
-                    result(i, j) = matrix[i][j] * img(i, j);
+                    result(i, j) = img(i, j) * value;
             }
         }
 
@@ -54,10 +54,10 @@ public:
 
         for (int i = 0; i < _maxX; i++) {
             for (int j = 0; j < _maxY; j++) {
-                if ((double)matrix[i][j] + img(i, j) > numeric_limits<T>::max() || (double)matrix[i][j] + img(i, j) < numeric_limits<T>::min())
+                if ((double)img(i, j) + value > numeric_limits<T>::max() || (double)img(i, j) + value < numeric_limits<T>::min())
                     result(i, j) = 0;
                 else
-                    result(i, j) = matrix[i][j] + img(i, j);
+                    result(i, j) = img(i, j) + value;
             }
         }
 
