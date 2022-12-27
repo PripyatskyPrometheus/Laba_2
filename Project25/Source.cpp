@@ -478,7 +478,6 @@ void menu(Image<T>& img1, Image<T>& img2, int X, int Y) {
                     cin >> value;
                 img1(x, y) = value;
                 break;
-            
         }
         case 11: {
             int x, y;
