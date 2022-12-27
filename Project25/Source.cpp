@@ -30,40 +30,6 @@ public:
     Image<T> operator+(T value);
 
     Image<T> operator*(T value);
-    
-    friend Image operator*(T value, Image<T>& img)
-    {
-        Image<T> result(_maxX, _maxY);
-
-        for (int i = 0; i < _maxX; i++) {
-            for (int j = 0; j < _maxY; j++) {
-                if ((double)img(i, j) * value > numeric_limits<T>::max() || (double)img(i, j) * value < numeric_limits<T>::min())
-                    result(i, j) = 0;
-                else
-                    result(i, j) = img(i, j) * value;
-            }
-        }
-
-        return result;
-
-    }
-
-    friend Image operator+(T value, Image<T>& img)
-    {
-        Image<T> result(_maxX, _maxY);
-
-        for (int i = 0; i < _maxX; i++) {
-            for (int j = 0; j < _maxY; j++) {
-                if ((double)img(i, j) + value > numeric_limits<T>::max() || (double)img(i, j) + value < numeric_limits<T>::min())
-                    result(i, j) = 0;
-                else
-                    result(i, j) = img(i, j) + value;
-            }
-        }
-
-
-        return result;
-    }
 
    Image<T> operator!();
 
@@ -202,7 +168,6 @@ Image<T> Image<T>::operator+(const Image<T>& img) {
 
             if ((double)matrix[i][j] + img(i, j) > numeric_limits<T>::max() || (double)matrix[i][j] + img(i, j) < numeric_limits<T>::min())
                 result(i, j) = 0;
-
             else
                 result(i, j) = matrix[i][j] + img(i, j);
         }
@@ -227,12 +192,12 @@ Image<T>  Image<T>::operator*(const Image<T>& img) {
 }
 
 template<class T>
-Image<T>  Image<T>::operator+(T value) {
+Image<T> Image<T>::operator+(T value) {
     Image<T> result(_maxX, _maxY);
 
     for (int i = 0; i < _maxX; i++) {
         for (int j = 0; j < _maxY; j++) {
-            if ((double)matrix[i][j] + value > numeric_limits<T>::max() || (double)matrix[i][j] + value < numeric_limits<T>::min())
+            if (matrix[i][j] + value > numeric_limits<T>::max() || (double)matrix[i][j] + (double)value < numeric_limits<T>::min())
                 result(i, j) = 0;
             else
                 result(i, j) = matrix[i][j] + value;
@@ -255,6 +220,79 @@ Image<T> Image<T>::operator*(T value) {
    }
     return result;
 }
+
+template<>
+Image<char> Image<char>::operator+(const Image<char>& img) {
+    Image<char> result(_maxX, _maxY);
+
+    for (int i = 0; i < _maxX; i++) {
+        for (int j = 0; j < _maxY; j++) {
+
+            if ((double)matrix[i][j] + img(i, j) > numeric_limits<char>::max() || (double)matrix[i][j] + img(i, j) < numeric_limits<char>::min())
+                result(i, j) = '0';
+            else
+                /*result(i, j) = (char)((double)matrix[i][j] + (double)img(i, j));*/
+                result(i, j) = matrix[i][j] + img(i, j);
+        }
+    }
+    return result;
+}
+
+template<>
+Image<char> Image<char>::operator*(const Image<char>& img) {
+    Image<char> result(_maxX, _maxY);
+
+    for (int i = 0; i < _maxX; i++) {
+        for (int j = 0; j < _maxY; j++) {
+            if ((double)matrix[i][j] * img(i, j) > numeric_limits<char>::max() || (double)matrix[i][j] * img(i, j) < numeric_limits<char>::min())
+                result(i, j) = '0';
+            else
+                result(i, j) = matrix[i][j] * img(i, j);
+        }
+    }
+
+    return result;
+}
+
+//template<>
+//Image<char> Image<char>::operator+(char value) {
+//    Image<char> result(_maxX, _maxY);
+//    if (value == '0')
+//        value = (char)0;
+//    else
+//        value = (char)1;
+//    for (int i = 0; i < _maxX; i++) {
+//        for (int j = 0; j < _maxY; j++) {
+//            if ((char)(((double)matrix[i][j] + (double)value)) > numeric_limits<char>::max() || (char)(((double)matrix[i][j] + (double)value)) < numeric_limits<char>::min())
+//                result(i, j) = (char)0;
+//            else
+//                result(i, j) = matrix[i][j] + value;
+//                
+//        }
+//    }
+//    return result;
+//}
+//
+//
+//template<>
+//Image<char> Image<char>::operator*(char value) {
+//    Image<char> result(_maxX, _maxY);
+//    if (value == '0')
+//        value = (char)0;
+//    else
+//        value = (char)1;
+//    for (int i = 0; i < _maxX; i++) {
+//        for (int j = 0; j < _maxY; j++) {
+//            if ((double)matrix[i][j] * (double)value > numeric_limits<char>::max() || (double)matrix[i][j] * (double)value < numeric_limits<char>::min())
+//                result(i, j) = '0';
+//            else {
+//                result(i, j) = matrix[i][j] * value;
+//            }
+//        }
+//    }
+//    return result;
+//}
+
 
 template<class T>
 Image<T> Image<T>::operator!() {
@@ -286,7 +324,7 @@ Image<char> Image<char>::operator!() {
     return result;
 }
 
-template<typename T>
+template<class T>
 double  Image<T>::fill_ratio() {
     int count = 0;
     for (int i = 0; i < _maxX; i++)
@@ -325,6 +363,22 @@ void Image<T>::change() {
     for (int i = 0; i < _maxX; i++) {
         for (int j = 0; j < _maxY; j++) {
             cin >> value;
+            if (value > numeric_limits<T>::max() || value < numeric_limits<T>::min()) {
+                    cout << "Error" << endl;
+                    cin >> value;
+            }
+            matrix[i][j] = value;
+        }
+        cout << endl;
+    }
+}
+
+template<>
+void Image<char>::change() {
+    char value;
+    for (int i = 0; i < _maxX; i++) {
+        for (int j = 0; j < _maxY; j++) {
+            cin >> value;
             matrix[i][j] = value;
         }
         cout << endl;
@@ -344,7 +398,9 @@ void menu(Image<T>& img1, Image<T>& img2, int X, int Y) {
         cout << "7. Multiply image with bool" << endl;
         cout << "8. Fill ratio" << endl;
         cout << "9. Change the composition" << endl;
-        cout << "10. Complete" << endl;
+        cout << "10. Index: replace" << endl;
+        cout << "11.Index: browse" << endl;
+        cout << "12. Complete" << endl;
         cin >> i;
 
         switch (i) {
@@ -352,16 +408,18 @@ void menu(Image<T>& img1, Image<T>& img2, int X, int Y) {
             int x, y, radius;
             cout << "Enter the coordinates of the center and the radius of the circle" << endl;
             cin >> x >> y >> radius;
-            while ((x - radius) < 0 || (y - radius) < 0 || (x + radius) > X || (y + radius) > Y) {
-                cout << "Error" << endl;
-                cout << "Enter the coordinates of the center and the radius of the circle" << endl;
-                cin >> x >> y >> radius;
+            if ((x - radius) < 0 || (y - radius) < 0 || (x + radius) > X || (y + radius) > Y) {
+                while ((x - radius) < 0 || (y - radius) < 0 || (x + radius) > X || (y + radius) > Y) {
+                    cout << "Error" << endl;
+                    cout << "Enter the coordinates of the center and the radius of the circle" << endl;
+                    cin >> x >> y >> radius;
+                }
             }
             cout << "Enter the value of the pixel" << endl;
             T value;
             cin >> value;
-            Image<T> tmp = cret_circle(img1, x, y, radius, value);
-            cout << tmp;
+            /*Image<T> tmp*/ img1 = cret_circle(img1, x, y, radius, value);
+            cout << img1;
             break;
         }
         case 2: {
@@ -369,7 +427,7 @@ void menu(Image<T>& img1, Image<T>& img2, int X, int Y) {
             break;
         }
         case 3: {
-           !img1;
+            !img1;
             break;
         }
         case 4: {
@@ -380,10 +438,10 @@ void menu(Image<T>& img1, Image<T>& img2, int X, int Y) {
             T value;
             cout << "Enter a value" << endl;
             cin >> value;
-           img1 = img1 + value;
+            img1 = img1 + value;
             break;
         }
-        case 6: {         
+        case 6: {
             img1 = img1 * img2;
             break;
         }
@@ -391,33 +449,64 @@ void menu(Image<T>& img1, Image<T>& img2, int X, int Y) {
             T value;
             cout << "Enter a value" << endl;
             cin >> value;
-            img1 =img1 * value;
+            img1 = img1 * value;
             break;
         }
         case 8: {
-            
             cout << img1.fill_ratio() << endl;
             break;
         }
         case 9: {
             cout << "Enter a value" << endl;
             img1.change();
-            
+
             break;
         }
         case 10: {
+            T value;
+            int x, y;
+            cout << "enter the X and Y values" << endl;
+            cin >> x >> y;
+            if (x < 0 || x > X || y < 0 || y > Y) {
+                while (x < 0 || x > X || y < 0 || y > Y) {
+                    cout << "Error" << endl;
+                    cout << "enter the X and Y values" << endl;
+                    cin >> x >> y;
+                }
+            }
+                cout << "Enter a value" << endl;
+                    cin >> value;
+                img1(x, y) = value;
+                break;
+            
+        }
+        case 11: {
+            int x, y;
+            cout << "enter the X and Y values" << endl;
+            cin >> x >> y;
+            if (x < 0 || x > X || y < 0 || y > Y) {
+                while (x < 0 || x > X || y < 0 || y > Y) {
+                    cout << "Error" << endl;
+                    cout << "enter the X and Y values" << endl;
+                    cin >> x >> y;
+                }
+            }
+            cout << img1(x, y) << endl;
+            break;
+        }
+        case 12: {
             return;
             break;
         }
         default: {
-           cout << "Error" << endl;
+            cout << "Error" << endl;
             cin >> i;
             break;
         }
+        
         }
     }
 }
-
 template<class T>
 void select_img(Image<T>& img1, Image<T>& img2, int x, int y) {
     int num;
@@ -447,9 +536,11 @@ void create_by_type(int type) {
     int x, y;
     cout << "Enter X and Y of the image" << endl;
     cin >> x >> y;
-    while(x < 0 || y < 0){
-        cout << "Enter X and Y of the image" << endl;
-        cin >> x >> y;
+    if (x < 0 || y < 0) {
+        while (x < 0 || y < 0) {
+            cout << "Enter X and Y of the image" << endl;
+            cin >> x >> y;
+        }
     }
     if (type == 1) {
         Image<bool> img1(x, y);
